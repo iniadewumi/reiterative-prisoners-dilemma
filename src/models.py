@@ -24,10 +24,11 @@ class Simulation:
 
     def run_simulation(self, rounds=5):
         for r in range(rounds):
-            print(f"Round {r}")
+            print(f"\nRound {r}")
             for agent1, agent2 in itertools.combinations(self.agents, 2):
+                print(f"\t{agent1.name} vs {agent2.name}")
                 self.play_round(agent1, agent2, r)
-
+        self.analyze_results()
 
     def analyze_results(self):
         self.results_df = pd.DataFrame(self.results)
@@ -47,7 +48,7 @@ class Simulation:
         agent2.update_history(decision2, decision1)
         agent1.score+=payoff1
         agent2.score+=payoff2
-
+        print(f"\t{decision1} vs {decision1}")
         self.results.append({
             'Round': round_no,
             'Agent1': agent1.name,
@@ -127,6 +128,11 @@ class Agent:
             return 'C'
         elif self.strategy == "always-defect":
             return 'D'
+        elif self.strategy == "tit-for-2-tat":
+            if opponent.history[-1][1]+opponent.history[-2][1]=='DD':
+                return 'D'
+            else:
+                return 'C'
         else:
             raise NotImplementedError
 
@@ -175,11 +181,12 @@ class DecisionTreeAgent(Agent):
         # Example: Use the last round as input to the model
         if not opponent.history:
             return random.choice(['C', 'D'])  # Random choice if no history
-        temp_df = pd.DataFrame(opponent.history).replace({'C':1, 'D':0})
-        self.model.fit(X=temp_df[0].values.reshape(-1,1), y=temp_df[1])
-        last_round = opponent.history[-1]
-        prediction = self.model.predict([last_round])
-        return prediction[0]
+        temp_df = pd.DataFrame(opponent.history)
+        temp_df.replace({'C':1, 'D':0}, inplace=True)
+        self.model.fit(X=temp_df[1].values.reshape(-1,1), y=temp_df[0])
+        last_round = opponent.history[-1][0]
+        prediction = self.model.predict([[{'C':1, 'D':0}.get(last_round)]])[0]
+        return ['D', 'C'][prediction]
 
 
 
@@ -222,7 +229,7 @@ agents = [
         AdaptiveAgent(name="Groot"),
         ProbabilisticAgent(name="Prosper"),
         HeuristicAgent(name='Eureka'),
-        DecisionTreeClassifier(name="Destiny")
+        DecisionTreeAgent(name="Destiny")
 ]
 
 
