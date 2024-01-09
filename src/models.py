@@ -7,6 +7,8 @@ from creme import tree
 
 class Simulation:
     def __init__(self, agents):
+        for _id, agent in enumerate(agents):
+            agent._id = _id
         self.agents = agents
         self.results = []
         self.payoffs = {
@@ -37,6 +39,7 @@ class Simulation:
             scores_data.append([agent.name, agent.strategy, agent.score])
         
         self.scores_df  = pd.DataFrame(data=scores_data, columns=["Name", "Strategy", "Score"])
+        self.scores_df.sort_values('Score')
             
 
     def play_round(self, agent1, agent2, round_no):
@@ -61,47 +64,47 @@ class Simulation:
             'Payoff2': payoff2
         })
 
-class Agent:
-    def __init__(self, name, strategy, model=None):
-        if strategy=='adaptive' and not model:
-            raise ValueError("Model must be provided if adaptive strategy")
-        self.name = name
-        self.strategy = strategy
-        self.history = []
-        self.model = model
-        self.score = 0
+# class Agent:
+#     def __init__(self, name, strategy, model=None):
+#         if strategy=='adaptive' and not model:
+#             raise ValueError("Model must be provided if adaptive strategy")
+#         self.name = name
+#         self.strategy = strategy
+#         self.history = []
+#         self.model = model
+#         self.score = 0
         
 
-    def decide(self, opponent):
-        # Implement strategy logic here
-        if self.strategy == 'random':
-            return random.choice(['C', 'D'])
-        elif self.strategy == "tit-for-tat":
-            if not opponent.history:  # If no history yet, start with cooperation
-                return 'C'
-            else:
-                return opponent.history[-1][1]  # Mirror the opponent's last decision
-        elif self.strategy == "tit-for-2-tat":
-            if opponent.history[-1][1]+opponent.history[-2][1]=='DD':
-                return 'D'
-            else:
-                return 'C'
-        elif self.strategy == "always-cooperate":
-            return 'C'
-        elif self.strategy == "always-defect":
-            return 'D'
-        elif self.strategy == "adaptive":
-            return 
-            # self.model.
+#     def decide(self, opponent):
+#         # Implement strategy logic here
+#         if self.strategy == 'random':
+#             return random.choice(['C', 'D'])
+#         elif self.strategy == "tit-for-tat":
+#             if not opponent.history:  # If no history yet, start with cooperation
+#                 return 'C'
+#             else:
+#                 return opponent.history[-1][1]  # Mirror the opponent's last decision
+#         elif self.strategy == "tit-for-2-tat":
+#             if opponent.history[-1][1]+opponent.history[-2][1]=='DD':
+#                 return 'D'
+#             else:
+#                 return 'C'
+#         elif self.strategy == "always-cooperate":
+#             return 'C'
+#         elif self.strategy == "always-defect":
+#             return 'D'
+#         elif self.strategy == "adaptive":
+#             return 
+#             # self.model.
 
-        else:
-            raise NotImplementedError
+#         else:
+#             raise NotImplementedError
 
 
 
-        # Additional strategies can be added here
-    def update_history(self, own_decision, opponent_decision):
-        self.history.append((own_decision, opponent_decision))
+#         # Additional strategies can be added here
+#     def update_history(self, own_decision, opponent_decision):
+#         self.history.append((own_decision, opponent_decision))
 
 
 class Agent:
@@ -113,6 +116,7 @@ class Agent:
         self.history = []
         self.model = model
         self.score = 0
+        self._id = None
         
 
     def decide(self, opponent):
@@ -182,10 +186,11 @@ class DecisionTreeAgent(Agent):
         if not opponent.history:
             return random.choice(['C', 'D'])  # Random choice if no history
         temp_df = pd.DataFrame(opponent.history)
+        temp_df[2] = opponent._id
         temp_df.replace({'C':1, 'D':0}, inplace=True)
-        self.model.fit(X=temp_df[1].values.reshape(-1,1), y=temp_df[0])
+        self.model.fit(X=temp_df[[1, 2]], y=temp_df[0])
         last_round = opponent.history[-1][0]
-        prediction = self.model.predict([[{'C':1, 'D':0}.get(last_round)]])[0]
+        prediction = self.model.predict([[{'C':1, 'D':0}.get(last_round), opponent._id]])[0]
         return ['D', 'C'][prediction]
 
 
@@ -218,6 +223,7 @@ class AdaptiveAgent(Agent):
         features = {}
         features['opponent_coop_count'] = sum(1 for _, action in opponent.history[-5:] if action == 'C')
         features['opponent_def_count'] = sum(1 for _, action in opponent.history[-5:] if action == 'D')
+        features['opponent_id'] = opponent._id
         return features
 
 agents = [
