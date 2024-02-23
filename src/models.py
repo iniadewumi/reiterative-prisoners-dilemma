@@ -4,6 +4,8 @@ import itertools
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from creme import tree
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class Simulation:
     def __init__(self, agents, payoffs=None):
@@ -54,8 +56,18 @@ class Simulation:
         for agent in self.agents:
             scores_data.append([agent.name, agent.strategy, agent.score])
         
-        self.scores_df = pd.DataFrame(data=scores_data, columns=["Name", "Strategy", "Score"])
-        self.scores_df.sort_values('Score', inplace=True)
+        self.scores_df = pd.DataFrame(data=scores_data, columns=["Name", "Strategy", "Score"]).sort_values('Score', inplace=True)
+        plot_results(self.scores_df)
+
+def plot_results(df):
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x="Score", y="Name", data=df.sort_values("Score", ascending=True), hue="Strategy", dodge=False)
+    plt.title("Scores of Agents by Strategy in the Iterative Prisoner's Dilemma")
+    plt.xlabel("Score")
+    plt.ylabel("Agent")
+    plt.legend(title="Strategy", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.grid(axis='x')
+    plt.show()
 
 
 class Agent:
