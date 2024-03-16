@@ -30,53 +30,23 @@ class Agent:
 class HeuristicAgent(Agent):
     def __init__(self, name):
         super().__init__(name, strategy="heuristic")
-        # Initialize the agent with a name and strategy.
-
-    def analyze_action_sequence(self, last_five):
-        """Analyze the sequence of the opponent's last five actions to identify patterns that inform our next decision."""
-        if len(last_five) == 0:
-            # No history yet, default to cooperation
-            return 'C'
-        
-        if len(last_five) < 3:
-            # Not enough data for complex pattern analysis; fall back to simpler analysis.
-            # Could consider the most recent action more heavily, for example.
-            return 'D' if last_five[-1] == 'D' else 'C'
-
-        # Look for specific patterns in the last three actions.
-        last_three_actions = last_five[-3:]
-        if last_three_actions == ['D', 'C', 'C']:
-            return 'C'
-        elif last_three_actions == ['C', 'D', 'D']:
-            return 'D'  
-
-        # Additional patterns can be added here as the strategy evolves.
-        
-        return None
 
     def decide(self, opponent):
-        """Make a decision based on the opponent's history."""
-        last_five = [action[1] for action in opponent.history[-5:]]
-        pattern_decision = self.analyze_action_sequence(last_five)
-        
-        if pattern_decision is not None:
-            return pattern_decision
-        else:
+        if len(opponent.history) >= 5:
+            last_five = [action[1] for action in opponent.history[-5:]]
             defections = last_five.count('D')
             return 'D' if defections > 2 else 'C'
-
+        return 'C'
 
 class ProbabilisticAgent(Agent):
-    def __init__(self, name, cooperation_threshold=0.6):
+    def __init__(self, name):
         super().__init__(name, strategy="probabilistic")
-        self.cooperation_threshold = cooperation_threshold
 
     def decide(self, opponent):
         if len(opponent.history) >= 5:
             cooperation_probability = sum(action[1] == 'C' for action in opponent.history[-5:]) / 5
-            return 'D' if cooperation_probability < self.cooperation_threshold else 'C'
+            return 'D' if cooperation_probability < 0.6 else 'C'
         return 'D'
-
 
 class DecisionTreeAgent(Agent):
     def __init__(self, name, model=None):

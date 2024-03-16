@@ -1,4 +1,7 @@
 # Patterns and Improvements for Agent Strategies
+While defection might be a good starting strategy, it is not a good long term strategy, even among non-complex agents, reputation becomes a thing, and once reputations are created, the only time defection works is when the other agents do not adapt, or ignore the reputation of their opponent (like in the case of cooper). Devin exploits Cooper in every round, gaining points while Cooper loses points. The same pattern occurs with Destiny vs Cooper.
+
+
 
 ## Adaptive Agent
 - Pattern: The Adaptive Agent performed well against agents with consistent strategies but struggled against agents that frequently changed their behavior.

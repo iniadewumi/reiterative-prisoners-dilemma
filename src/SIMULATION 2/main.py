@@ -1,4 +1,4 @@
-from agent import Agent, HeuristicAgent, ProbabilisticAgent, DecisionTreeAgent, AdaptiveAgent
+from agent import Agent, HeuristicAgent, ProbabilisticAgent, DecisionTreeAgent, AdaptiveAgent, PunisherAgent
 from simulation import Simulation
 from analysis import plot_results
 
@@ -12,6 +12,7 @@ agents = [
     AdaptiveAgent(name="Groot"),
     ProbabilisticAgent(name="Prosper"),
     HeuristicAgent(name='Eureka'),
+    PunisherAgent(name='FrankCastle'),
     DecisionTreeAgent(name="Destiny")
 ]
 
