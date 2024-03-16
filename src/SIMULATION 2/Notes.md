@@ -18,3 +18,20 @@ Always Cooperate (Cooper): Cooper was exploited by everyone that couldd (Devin a
 Random Agent (Randy): No strategy, poor performance as expected.
 
 These agents serve as important baselines to evaluate the performance of other strategies. The will continue to be benchmarks to measure the effectiveness of more advanced agents in promoting cooperation or exploiting simple strategies. But for Randy, I want to explore letting the random strategy benefit from the basic recency effect as well. (reference the `analyze_opponent_history` method in the Agent class).
+
+Decision Tree Agents:
+What were the differences and why did performance differ so much? With groot scoring (6257, coming in seventh) and Destiny scoring (20341, coming in first). 
+
+Destiny (Decision Tree Agent):
+- Uses a dedicated DecisionTreeClassifier from the sklearn library.
+- The decision tree is trained on the opponent's entire history of actions.
+- The agent's decision is directly based on the prediction of the trained decision tree model.
+- The decision tree is re-trained every round on the updated history.
+
+Groot (Adaptive Agent):
+- This agent also employs the use of DecisionTreeClassifier, but it's a component of a more general "adaptive" strategy. 
+- The decision tree is trained on a limited subset of the opponent's history (the last 5 rounds).
+- The model is not always retrained, and agent's decision is based on a custom decision-making process that takes into account the counts of the opponent's recent cooperations and defections, rather than directly using the decisions for prediction.
+- The model will not be making it to the next round, and will be replaced by a Reinforcement Learning Agent: Implement an agent that learns using reinforcement learning techniques, such as Q-learning or SARSA, to adapt its strategy based on the rewards received in each round.
+
+Evolutionary Agent: Create a population of agents with different strategies and let them evolve over generations based on their performance in the simulation. The agents with higher scores have a higher probability of passing their strategies to the next generation.
