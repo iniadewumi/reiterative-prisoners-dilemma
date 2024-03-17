@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 
 class Agent:
@@ -51,7 +52,7 @@ class ProbabilisticAgent(Agent):
 class DecisionTreeAgent(Agent):
     def __init__(self, name, model=None):
         super().__init__(name, strategy="decision-tree")
-        self.model = decision_tree_model or DecisionTreeClassifier()
+        self.model = model or DecisionTreeClassifier()
 
     def decide(self, opponent):
         if len(opponent.history) < 2:
@@ -75,6 +76,7 @@ class AdaptiveAgent(Agent):
         self.initialized = False
 
     def decide(self, opponent):
+        self.update_model(opponent)
         if self.initialized:
             features = self.extract_features(opponent)
             decision = self.model.predict([features])[0]

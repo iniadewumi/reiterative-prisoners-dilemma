@@ -1,4 +1,6 @@
 import itertools
+import pandas as pd
+from prisoner_dilemma.analysis import plot_results
 
 class Simulation:
     def __init__(self, agents, payoffs=None):
@@ -43,7 +45,6 @@ class Simulation:
         })
 
     def analyze_results(self):
-        import pandas as pd
         self.results_df = pd.DataFrame(self.results)
         scores_data = []
         for agent in self.agents:
