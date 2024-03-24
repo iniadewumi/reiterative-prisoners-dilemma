@@ -32,6 +32,10 @@ Groot (Adaptive Agent):
 - This agent also employs the use of DecisionTreeClassifier, but it's a component of a more general "adaptive" strategy. 
 - The decision tree is trained on a limited subset of the opponent's history (the last 5 rounds).
 - The model is not always retrained, and agent's decision is based on a custom decision-making process that takes into account the counts of the opponent's recent cooperations and defections, rather than directly using the decisions for prediction.
-- The model will not be making it to the next round, and will be replaced by a Reinforcement Learning Agent: Implement an agent that learns using reinforcement learning techniques, such as Q-learning or SARSA, to adapt its strategy based on the rewards received in each round.
+- The model will not be making it to the next round, and will be replaced by an ensemble model. 
+
+
+NEXT UP:
+Reinforcement Learning Agent: Implement an agent that learns using reinforcement learning techniques, such as Q-learning or SARSA, to adapt its strategy based on the rewards received in each round. Added a Q-Learning agent created by using Claude AI to generate the code, since I know very little aboput Reinforcement Learning.
 
 Evolutionary Agent: Create a population of agents with different strategies and let them evolve over generations based on their performance in the simulation. The agents with higher scores have a higher probability of passing their strategies to the next generation.

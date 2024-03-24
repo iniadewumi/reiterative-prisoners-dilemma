@@ -1,6 +1,5 @@
-from agent import Agent, HeuristicAgent, ProbabilisticAgent, DecisionTreeAgent, AdaptiveAgent, PunisherAgent
+from agents import Agent, HeuristicAgent, ProbabilisticAgent, IncremDecisionTreeAgent, PunisherAgent, QLearningAgent
 from simulation import Simulation
-from analysis import plot_results
 
 # Simulation 1
 agents = [
@@ -9,11 +8,11 @@ agents = [
     Agent(name="Randy", strategy="random"), 
     Agent(name="Titi", strategy="tit-for-tat"),
     Agent(name="Tata", strategy="tit-for-2-tat"),
-    AdaptiveAgent(name="Groot"),
     ProbabilisticAgent(name="Prosper"),
     HeuristicAgent(name='Eureka'),
     PunisherAgent(name='FrankCastle'),
-    DecisionTreeAgent(name="Destiny")
+    IncremDecisionTreeAgent(name="Destiny"),
+    QLearningAgent(name="Quincy")
 ]
 
 simulation = Simulation(agents)

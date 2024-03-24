@@ -1,4 +1,6 @@
 import itertools
+import pandas as pd
+from analysis import plot_results
 
 class Simulation:
     def __init__(self, agents, payoffs=None):
@@ -43,11 +45,10 @@ class Simulation:
         })
 
     def analyze_results(self):
-        import pandas as pd
         self.results_df = pd.DataFrame(self.results)
         scores_data = []
         for agent in self.agents:
             scores_data.append([agent.name, agent.strategy, agent.score])
         
-        self.scores_df = pd.DataFrame(data=scores_data, columns=["Name", "Strategy", "Score"]).sort_values('Score', inplace=True)
+        self.scores_df = pd.DataFrame(data=scores_data, columns=["Name", "Strategy", "Score"]).sort_values('Score')
         plot_results(self.scores_df)
